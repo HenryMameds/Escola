@@ -1,0 +1,55 @@
+
+
+create or replace procedure sp_boletim
+is
+cursor c_boletim is select matricula from frequencia_nota;
+
+v_boletim c_boletim%rowtype;
+
+a_nome aluno.nome%type;
+a_matricula aluno.matricula%type;
+a_av1 frequencia_nota.nota_av1%type;
+a_av2 frequencia_nota.nota_av2%type;
+a_av3 frequencia_nota.nota_av3%type;
+a_faltas frequencia_nota.faltas%type;
+a_sit frequencia_nota.situacao%type;
+a_limite frequencia_nota.faltas%type;
+a_media frequencia_nota.nota_av1%type;
+a_disc frequencia_nota.cd_disciplina%type;
+a_cargah disciplina.carga_horaria%type;
+nome_disc disciplina.nome%type;
+
+begin
+    open c_boletim;
+        loop
+            fetch c_boletim into v_boletim;
+            exit when c_boletim%notfound;
+            
+            select cd_disciplina, matricula, nota_av1, nota_av2, nota_av3, faltas into a_disc, a_matricula, a_av1, a_av2, a_av3, a_faltas from frequencia_nota where matricula = v_boletim.matricula;
+            select nome into a_nome from aluno where  matricula = a_matricula;
+            select nome, carga_horaria into nome_disc, a_cargah from disciplina where cd_disciplina = a_disc;
+         
+            
+            a_limite :=  a_cargah * 0.25;
+            a_media  := (a_av1 + a_av2 + a_av3) / 3;
+            
+            if (a_faltas <= a_limite and a_media >= 6) then
+            
+                a_sit := 'APROVADO';
+            
+            elsif (a_faltas <= a_limite and a_media < 6 and a_media >= 4) then
+            
+                a_sit := 'EXAME';
+            
+            else 
+            
+                a_sit := 'REPROVADO';
+                
+            end if;
+            
+            dbms_output.put_line('N° Matricula: ' || a_matricula || ' Aluno: ' || a_nome || ' Disciplina: ' || nome_disc || chr(10) || 'Av1: ' || a_av1 || ' Av2: ' || a_av2 || ' Av3: ' || a_av3  ||  chr(10) || 'Media: '  ||  a_media || ' Faltas: ' || a_faltas || ' Limite: ' || a_limite);
+            dbms_output.put_line('Situacao: ' ||  a_sit );
+        end loop;
+    
+end sp_boletim;
+
