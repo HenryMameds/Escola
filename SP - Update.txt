@@ -1,0 +1,154 @@
+create or replace procedure sp_update_disc
+(
+vl_cd in disciplina.cd_disciplina%type
+,vl_nome    in  disciplina.nome%type
+,vl_ch      in  disciplina.carga_horaria%type
+,vl_sigla   in  disciplina.sigla%type
+,vl_ds      in  disciplina.descricao%type
+) is
+begin
+    
+    
+    
+    update disciplina set nome = vl_nome, carga_horaria = vl_ch, sigla = vl_sigla, descricao = vl_ds
+    where cd_disciplina = vl_cd;
+    
+    dbms_output.put_line('Curso atualizado com sucesso!');
+
+end sp_update_disc;
+
+-- procedure de update curso ||
+create or replace procedure sp_update_curso
+(
+vl_cd in curso.cd_curso%type
+,vl_nome in curso.nome%type
+,vl_sigla in curso.sigla%type
+,vl_desc in curso.descricao%type
+,vl_duracao in curso.duracao%type
+) is 
+begin
+    
+    
+    update curso set nome = vl_nome, sigla = vl_sigla, descricao = vl_desc, duracao = vl_duracao
+    where cd_curso = vl_cd;
+    
+    dbms_output.put_line('Curso atualizado com sucesso!');
+
+end sp_update_curso;
+
+ -- procedure de update professor
+ 
+ create or replace procedure sp_update_professor
+ (
+ vl_cd in professor.cd_professor%type
+ ,vl_nome in professor.nome%type
+,vl_cpf in professor.cpf%type
+,vl_tel in professor.telefone%type
+,vl_e_mail in professor.e_mail%type
+,vl_end in professor.endereco%type
+,vl_dt_nasc in professor.dt_nascimento%type
+) is
+begin
+    
+    update professor set nome = vl_nome, cpf = vl_cpf, telefone = vl_tel, e_mail = vl_e_mail, endereco = vl_end, dt_nascimento = vl_dt_nasc
+    where cd_professor = vl_cd;
+    
+    dbms_output.put_line('Professor atualizado com sucesso!');
+
+end sp_update_professor;
+
+create or replace procedure sp_update_sala
+(
+vl_cd in sala.cd_sala%type
+,vl_numero in sala.numero%type
+,vl_desc in sala.descricao%type
+) is 
+
+begin
+    update sala set numero = vl_numero, descricao = vl_desc
+    where cd_sala = vl_cd;
+    
+    dbms_output.put('Sala atualizada com sucesso!');
+
+end sp_update_sala;
+
+-- procedure de atualização turma
+
+create or replace procedure sp_update_turma
+(
+vl_cd in turma.cd_turma%type
+,vl_sigla in turma.sigla%type
+,cd_cur in turma.cd_curso%type
+,vl_periodo in turma.periodo%type
+)is
+
+begin
+    
+    update turma set sigla = vl_sigla, cd_curso = cd_cur, periodo = vl_periodo
+    where cd_turma  = vl_cd;
+    
+    dbms_output.put_line('Turma atualizada com sucesso!');
+
+end sp_update_turma;
+
+
+create or replace procedure sp_update_aluno
+(
+vl_cd in aluno.matricula%type
+,vl_nome in aluno.nome%type
+,vl_cpf in aluno.cpf%type
+,vl_rg in aluno.cpf%type
+,vl_tel in aluno.telefone%type
+,vl_email in aluno.e_mail%type
+,vl_end in aluno.endereco%type
+,vl_dtnasc in aluno.dt_nascimento%type
+,vl_turma in aluno.cd_turma%type
+,vl_mat_atv in aluno.matricula_ativa%type
+
+) is
+
+begin
+
+    update aluno set nome = vl_nome, cpf = vl_cpf, rg = vl_rg, telefone = vl_tel, e_mail = vl_email, endereco = vl_end, dt_nascimento = vl_dtnasc, cd_turma = vl_turma, matricula_ativa = vl_mat_atv
+    where matricula = vl_cd;
+    
+    dbms_output.put('Aluno atualizado com sucesso');
+
+end sp_update_aluno;
+
+-- Procedure de atualização da tabela frequencia nota
+
+create or replace procedure sp_update_freq_nota
+(
+vl_mat in frequencia_nota.matricula%type
+,vl_av1 in frequencia_nota.nota_av1%type
+,vl_av2 in frequencia_nota.nota_av2%type
+,vl_av3 in frequencia_nota.nota_av3%type
+,vl_faltas in frequencia_nota.faltas%type
+) is
+begin
+    
+    update frequencia_nota set nota_av1 = vl_av1, nota_av2 = vl_av2, nota_av3 = vl_av3, faltas = vl_faltas
+    where matricula = vl_mat;
+    
+    dbms_output.put_line('Atualização feita com sucesso!');
+
+end sp_update_freq_nota;
+
+-- procedure de update frequencia nota
+
+create or replace procedure sp_update_frequencia_nota
+(
+vl_matricula in frequencia_nota.matricula%type
+,vl_av1 frequencia_nota.nota_av1%type
+,vl_av2 frequencia_nota.nota_av2%type
+,vl_av3 frequencia_nota.nota_av3%type
+,vl_faltas frequencia_nota.faltas%type
+)is
+
+begin
+    
+    update frequencia_nota set nota_av1 = vl_av1, nota_av2 = vl_av2, nota_av3 = vl_av3, faltas = vl_faltas where matricula = vl_matricula;
+    dbms_output.put_line('Atualização realizada com sucesso!');
+
+end sp_update_frequencia_nota;
