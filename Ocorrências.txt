@@ -1,0 +1,89 @@
+-- insert de dados [Disciplina] 
+
+exec sp_insert_disciplina('Lógica de Programação', 80, 'LP1', '---');
+exec sp_insert_disciplina('Excell Básico', 40, 'EX1', '---');
+exec sp_insert_disciplina('SQL Básico', 40, 'SQL1', '---');
+exec sp_insert_disciplina('Excell Avançado', 80, 'EX2', '---');
+exec sp_insert_disciplina('SQL Avançado', 80, 'SQL2', '---');
+
+-- Fim [Disciplina] --
+
+
+-- insert de dados [Curso]
+
+exec sp_insert_curso('Administração', 'ADM', '---', 8);
+exec sp_insert_curso('Banco de dados', 'TBD', '---', 5);
+
+
+-- Fim [Curso] --
+
+-- insert de dados [Professor ] --
+
+exec sp_insert_professor('Vera Lúcia', '40230225871', '4642-7028', 'vera@vera', '---', '27/10/1968');
+exec sp_insert_professor('Dilson Coelho', '10230427881', '998712654', 'coelho@coelho', '---', '16/06/1977');
+
+-- fim [Professor]
+
+-- insert de dados [sala]
+
+ exec sp_insert_sala(22, 'LAB');
+ exec sp_insert_sala(1, null);
+
+-- fim [sala]
+
+-- insert [turma]
+-- alterar codigo dos cursos, de acordo com a sequência atual.
+exec sp_insert_turma('ADM1', 1, 'matutino');
+exec sp_insert_turma('DBA1', 2, 'matutino');
+-- fim [turma]
+
+
+-- insert de dados [sal_tur]
+
+--alterar codigo dos cursos, de acordo com a sequência atual.
+exec sp_insert_sal_tur(2, 1);
+exec sp_insert_sal_tur(1, 2);
+
+
+-- fim [sal_tur]
+
+
+-- insert de dados [curso_disciplina
+--alterar codigo dos cursos/disciplinas, de acordo com a sequência atual.
+
+exec sp_insert_disc_cur(2, 3);
+exec sp_insert_disc_cur(2, 1);
+
+exec sp_insert_disc_cur(1, 2);
+exec sp_insert_disc_cur(1, 4);
+
+
+-- fim [curso_disciplina
+
+-- insert de dados [lecionada_horario]
+
+exec sp_insert_lecionada_horario(1, 1, 2, 08, 11, 'seg');
+exec sp_insert_lecionada_horario(2, 2, 3, 08, 11, 'seg');
+
+-- fim [lecionada_horario]
+
+-- insert de dados [aluno]
+
+exec sp_insert_aluno ('Maria Yavi', '1235412586', '169254168', '986703536', 'yavi@yavi', 'Rua das Estrelas', '25/07/1997', 1, 's');
+exec sp_insert_aluno ('Katarina', '1235412587', '169254558', '11111111', 'kat@kat', 'Rua das Láminas', '02/12/2001', 1, 'n');
+
+
+-- fim [aluno]
+
+-- insert de dados frequencia_nota
+
+exec sp_insert_frequencia_nota(2, 1, null, null, null, null, null);
+exec sp_insert_frequencia_nota(2, 2, null, null, null, null, null);
+
+-- fim [frequencia nota]
+
+-- update de dados disciplina
+
+exec sp_update_disc ('5', 'SQL Intermediario', 60, 'SQL2', '-----');
+
+-- fim [disciplina]
