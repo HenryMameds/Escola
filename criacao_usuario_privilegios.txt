@@ -1,0 +1,51 @@
+--Perfil DBA_ADM
+
+create profile DBA_ADM
+limit sessions_per_user 1
+idle_time 5
+failed_login_attempts 3
+password_life_time 60
+password_reuse_time 365;
+
+--Perfil DBA_Auxiliar
+
+create profile DBA_Auxiliar 
+limit sessions_per_user 1
+idle_time 5
+failed_login_attempts 3
+password_life_time 60
+password_reuse_time 365;
+
+--Usuário DBA_Auxiliar
+
+create user DBA_Auxiliar
+profile DBA_Auxiliar
+identified by uni9
+default tablespace Users_escola
+quota unlimited on users account
+unlock;
+
+--Usuário DBA_ADM
+
+create user dba_adm 
+identified by uninove10 
+profile DBA_ADM
+default tablespace Users_escola
+quota 100m on users
+account unlock;
+
+--Privilegios DBA_Auxiliar
+
+grant connect to DBA_Auxiliar;
+grant create table to DBA_Auxiliar;
+
+--Privilegios DBA_ADM
+
+grant connect to DBA_ADM;
+grant create table to DBA_ADM;
+
+--Consulta no dicionario de dados para verificar os usuários
+select username from dba_users where username in ('DBA_ADM', 'DBA_AUXILIAR');
+
+--Consulta no dicionario de dados para verificar os privilegios dos usuários
+select grantee, privilege from dba_sys_privs where grantee in ('DBA_ADM', 'DBA_AUXILIAR');
