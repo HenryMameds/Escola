@@ -1,0 +1,20 @@
+create role diretor;
+
+grant select, update on professor  to diretor;
+grant select, update on disciplina to diretor;
+
+grant diretor to dba_adm;
+
+
+
+create role professor;
+
+grant select on aluno to professor;
+grant select, update on frequencia_nota to professor;
+
+
+grant professor to dba_auxiliar;
+
+--Consulta no Dicionario de dados nas roles
+
+select * from dba_roles where role in ('DIRETOR', 'PROFESSOR');
