@@ -1,0 +1,33 @@
+Tablespace Administrador DBA
+
+create tablespace AdminDBA_tbs datafile
+'c:\oraclexe\app\oracle\oradata\xe\Administrador.dbf'
+size 900M
+autoextend on
+next 100M
+maxsize 999M;
+
+alter tablespace AdminDBA_tbs
+add datafile 'c:\oraclexe\app\oracle\oradata\xe\Administrador_Dados2.dbf'
+size 700M;
+
+drop tablespace AdminDBA_tbs
+including contents and datafiles cascade constraints;
+-------------------------------------------------------------------------
+Tablespace Users_escola
+
+create tablespace Users_escola  datafile
+'c:\oraclexe\app\oracle\oradata\xe\Users_escola.dbf'
+size 900M
+autoextend on
+next 100M
+maxsize 999M;
+
+alter tablespace Users_escola
+add datafile 'c:\oraclexe\app\oracle\oradata\xe\Users_escola_Dados2.dbf'
+size 700M;
+
+drop tablespace Users_escola
+including contents and datafiles cascade constraints;
+-------------------------------------------------------------------------
+select tablespace_name from dba_tablespaces where tablespace_name in ('ADMINDBA_TBS', 'USERS_ESCOLA');
