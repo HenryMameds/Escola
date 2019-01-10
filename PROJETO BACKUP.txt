@@ -1,0 +1,43 @@
+create user Henrique identified by xyz987;
+
+grant connect, resource to Henrique;
+
+alter user Henrique quota 10m on users;
+
+No usuário 'Henrique'
+
+create table aluno(
+ra number(10),
+nome varchar2(20));
+
+insert into aluno values(10192, 'Jorge');
+insert into aluno values(12469, 'Luana');
+commit;
+
+
+Com o usuário system, realize a criação de um diretório para armmazenar os arquivos de dados e de controle. 
+
+create directory NUVEM as 'c:\NUVEM';
+
+grant read, write on directory NUVEM to Henrique;
+
+
+DATA PUMP EXPORT
+
+C:\> EXPDP DIRECTORY=NUVEM DUMPFILE=DATA.DMP CONTENT=ALL
+
+
+Após o comando, será necessário dropar a tabela criada.
+
+drop table aluno;
+
+
+DATA PUMP IMPORT
+
+C:\> IMPDP DIRECTORY=NUVEM DUMPFILE=DATA.DMP CONTENT=ALL
+
+
+Utilize o comando DESCRIBE, para observar o objeto excluido anteriomente.
+
+desc aluno;
+
