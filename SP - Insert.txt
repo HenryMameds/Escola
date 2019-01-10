@@ -1,0 +1,330 @@
+-- Procedure de insert tabela disciplina
+
+create or replace procedure sp_insert_disciplina(
+nome       in  disciplina.nome%type
+,carga_h    in  disciplina.carga_horaria%type
+,sigla      in  disciplina.sigla%type
+,des        in  disciplina.descricao%type
+)is cd_disc  disciplina.cd_disciplina%type;
+Begin
+
+    select faixa_cd_disc.nextval into cd_disc from dual; 
+    insert into disciplina
+    (cd_disciplina, nome, carga_horaria, sigla, descricao)
+    values
+    (cd_disc, nome, carga_h, sigla, des);
+    dbms_output.put_line('Disciplina [' || nome || '] cadastrada com sucesso.');
+    commit;
+    exception 
+    when dup_val_on_index then
+    dbms_output.put_line('Erro ao cadastrar disciplina [' || nome || ']');
+    dbms_output.put_line(chr(10) || 'Verifique: '  || chr(10) || ' - nome' || chr(10) || ' - sigla');
+    
+
+end sp_insert_disciplina;
+
+-- procedure Insert curso
+
+create or replace procedure sp_insert_curso
+(
+nome in curso.nome%type
+,sigla in curso.sigla%type
+,descricao in curso.descricao%type
+,duracao in curso.duracao%type
+) is cod curso.cd_curso%type;
+begin
+    select faixa_cd_curso.nextval into cod from dual;
+    insert into curso 
+    (cd_curso, nome, sigla, descricao, duracao)
+    values
+    (cod, nome, sigla, descricao, duracao);
+    dbms_output.put_line('Curso [' || nome || '] cadastrado com sucesso.'); 
+    commit;
+    exception 
+    when dup_val_on_index then
+    dbms_output.put_line('Erro ao cadastrar curso [' || nome || '].');
+    dbms_output.put_line(chr(10) || 'Verifique: '  || chr(10) || ' - nome' || chr(10) || ' - sigla');
+    
+end sp_insert_curso;
+
+
+-- Procedure insert professor
+
+create or replace procedure sp_insert_professor(
+nome in professor.nome%type
+,cpf in professor.cpf%type
+,telefone in professor.telefone%type
+,e_mail in professor.e_mail%type
+,endereco in professor.endereco%type
+,dt_nasc in professor.dt_nascimento%type
+) is cod professor.cd_professor%type; v_data professor.dt_cadastro%type;
+begin
+    select faixa_cd_prof.nextval into cod from dual;
+    select sysdate into v_data from dual;
+    insert into professor
+    (cd_professor, nome, cpf, telefone, e_mail, endereco, dt_nascimento, dt_cadastro)
+    values
+    (cod, nome, cpf, telefone, e_mail, endereco, dt_nasc, v_data);
+    dbms_output.put_line('Professor(a)  [' || nome || '] cadastrado com sucesso.'); 
+    commit;
+    exception 
+    when dup_val_on_index then
+    dbms_output.put_line('Erro ao cadastrar professor [' || nome || '].');
+    dbms_output.put_line(chr(10) || 'Verifique: '  || chr(10) || ' - nome');
+
+end sp_insert_professor;
+
+-- Procedure insert sala
+
+create or replace procedure sp_insert_sala
+(
+numero in sala.numero%type
+,descricao in sala.descricao%type
+) is cod sala.cd_sala%type;
+begin
+    select faixa_cd_sala.nextval into cod from dual;
+    insert into sala 
+    (cd_sala, numero, descricao)
+    values
+    (cod, numero, descricao);
+    dbms_output.put_line('Sala de número[' || numero || '] cadastrada com sucesso.');
+    commit;
+    exception 
+    when dup_val_on_index then
+    dbms_output.put_line('Erro ao cadastrar sala [' || numero || ']');
+    dbms_output.put_line(chr(10) || 'Verifique: '  || chr(10) || ' - numero');
+end sp_insert_sala;
+
+-- procedure insert turma
+
+create or replace procedure sp_insert_turma
+(
+sigla in turma.sigla%type
+,cd_cur in turma.cd_curso%type
+,vl_periodo in turma.periodo%type
+) is cod_tur turma.cd_turma%type; v_data turma.dt_cadastro%type; cont number(2); 
+begin
+    select count(*) into cont from curso where cd_curso = cd_cur;
+    if (cont = 1) then
+        select faixa_cd_turma.nextval into cod_tur from dual;
+        insert into turma(cd_turma, sigla, cd_curso, periodo, dt_cadastro)
+        values
+        (cod_tur, sigla, cd_cur, vl_periodo, sysdate);
+        dbms_output.put_line('Turma [' || sigla || '] cadastrada com sucesso.');
+        commit;
+    else 
+        dbms_output.put_line('Erro ao cadastrar turma!');
+        dbms_output.put_line('[Curso não encontrado]');
+
+    end if;
+    
+    exception when dup_val_on_index then
+    dbms_output.put_line('Erro ao cadastrar turma [' || sigla || ']');
+    dbms_output.put_line(chr(10) || 'Verifique: '  || chr(10) || ' - sigla');
+    
+
+end sp_insert_turma;
+
+
+-- procedure insert sal_tur
+
+
+-- procedure insert sal_tur
+
+create or replace procedure sp_insert_sal_tur(
+cd_sal in sal_tur.cd_sala%type
+,cd_tur in sal_tur.cd_turma%type
+
+) is cont_tur number(1); cont_sal cont_tur%type; sig turma.sigla%type; num_sala sala.numero%type;
+begin
+    select count(*) into cont_tur from turma where cd_turma = cd_tur;
+    select count(*) into cont_sal from sala where cd_sala = cd_sal;
+    if(cont_tur = 1 and cont_sal = 1) then
+    
+    select sigla into sig from turma where cd_turma = cd_tur;
+    select numero into num_sala from sala where cd_sala = cd_sal;
+    
+        insert into sal_tur
+        (cd_sala, cd_turma, data_st)
+        values
+        (cd_sal, cd_tur, sysdate);
+        dbms_output.put_line('Turma ' || sig || ' Alocada na sala [' || num_sala || ']' );
+        commit;
+    else
+        dbms_output.put_line('Erro ao tentar alocar turma/sala!');
+        dbms_output.put_line(chr(10) || 'Verifique: '  || chr(10) || ' - codigo da sala' || chr(10) || ' - codigo da turma'  );
+    end if;
+    exception 
+    when dup_val_on_index then
+    dbms_output.put_line('Erro ao tentar associar sala/turma');
+    dbms_output.put_line(chr(10) || 'Verifique: '  || chr(10) || ' - codigo da sala' || chr(10) || ' - codigo da turma'  );
+    
+end sp_insert_sal_tur;
+ 
+-- procedure de insert curso_disciplina
+
+create or replace procedure sp_insert_disc_cur
+(
+vl_curso in curso_disciplina.cd_curso%type
+,vl_disc in curso_disciplina.cd_disciplina%type
+) is cont_cur number(2) :=0; cont_disc cont_cur%type :=0; ncurso curso.nome%type; ndisc disciplina.nome%type;
+begin
+    
+   select count(*) into cont_cur from curso where cd_curso = vl_curso;
+     select count(*) into cont_disc from disciplina where cd_disciplina = vl_disc;
+    
+    if(cont_cur = 1 and cont_disc = 1) then
+    
+      select nome into ncurso from curso where cd_curso = vl_curso;
+       select nome into ndisc from disciplina where cd_disciplina = vl_disc;
+        
+        insert into curso_disciplina
+        (cd_curso, cd_disciplina)
+        values
+        (vl_curso, vl_disc);
+        dbms_output.put_line('Disciplina ' || ndisc || ' Adicionada ao curso de [' || ncurso || ']' );
+        commit;
+        
+    else
+        dbms_output.put_line('Erro ao tentar associar curso/disciplina 1!');
+        dbms_output.put_line(chr(10) || 'Verifique: '  || chr(10) || ' - codigo do curso' || chr(10) || ' - codigo da disciplina'  );
+   end if;
+    
+    exception 
+    when dup_val_on_index then
+    dbms_output.put_line('Erro ao tentar associar curso/disciplina!');
+    dbms_output.put_line(chr(10) || 'Verifique: '  || chr(10) || ' - codigo do curso' || chr(10) || ' - codigo da disciplina'  );
+
+end sp_insert_disc_cur;
+
+-- procedure insert lecionada_horario
+
+create or replace procedure sp_insert_lecionada_horario
+(
+vl_tur in lecionada_horario.cd_turma%type
+,vl_prof in lecionada_horario.cd_professor%type
+,vl_disc in lecionada_horario.cd_disciplina%type
+,vl_hinicio lecionada_horario.hora_inicio%type
+,vl_hfinal lecionada_horario.hora_final%type
+,vl_dia lecionada_horario.dia%type
+) is cont_prof number(2); cont_disc cont_prof%type; cont_tur cont_prof%type; nome_prof professor.nome%type; sig turma.sigla%type; nome_disc disciplina.nome%type; peri turma.periodo%type;
+begin
+    select count(*) into cont_tur from turma where cd_turma = vl_tur;
+    select count(*) into cont_prof from professor where cd_professor = vl_prof;
+    select count(*) into cont_disc from disciplina where cd_disciplina = vl_disc;
+    
+    
+    if(cont_tur = 1 and cont_prof = 1 and cont_disc = 1) then
+        
+        select nome into nome_prof from professor where cd_professor = vl_prof;
+        select sigla into sig from turma where cd_turma = vl_tur;
+        select nome into nome_disc from disciplina where cd_disciplina = vl_disc;
+        select periodo into peri from turma where cd_turma = vl_tur;
+        
+        insert into lecionada_horario
+        (cd_turma, cd_professor, cd_disciplina, hora_inicio, hora_final, dia)
+        values
+        --(vl_tur, vl_prof, vl_disc, to_date(vl_dt_hora, DD/MM/YY HH24:MI:SS));
+        (vl_tur, vl_prof, vl_disc, vl_hinicio, vl_hfinal, vl_dia);
+        
+        dbms_output.put_line('Associação completa - ' || 'Turma: ' || sig || '  Disciplina: ' || nome_disc || ' - Professor: ' || nome_prof || ' - Período: ' || peri);
+        commit;
+        
+        else 
+        dbms_output.put_line('Erro ao tentar adicionar horário!');
+        dbms_output.put_line(chr(10) || 'Verifique: '  || chr(10) || ' - codigo da turma' || chr(10) || ' - codigo do professor' || chr(10) || ' - codigo da disciplina' );      
+        
+        
+    end if;
+     exception 
+     when dup_val_on_index then
+        dbms_output.put_line('Erro ao tentar adicionar horário!');
+        dbms_output.put_line(chr(10) || 'Verifique: '  || chr(10) || ' - codigo da turma' || chr(10) || ' - codigo do professor' || chr(10) || ' - codigo da disciplina' );
+    
+
+end sp_insert_lecionada_horario;
+
+
+-- procedure insert_aluno
+
+create or replace procedure sp_insert_aluno
+(
+vl_nome in aluno.nome%type
+,vl_cpf in aluno.cpf%type
+,vl_rg in aluno.cpf%type
+,vl_tel in aluno.telefone%type
+,vl_email in aluno.e_mail%type
+,vl_end in aluno.endereco%type
+,vl_dtnasc in aluno.dt_nascimento%type
+,vl_turma in aluno.cd_turma%type
+,vl_mat_atv in aluno.matricula_ativa%type
+) is mat aluno.matricula%type; cont_tur  number(2) :=0; sig turma.sigla%type;
+begin
+
+    select count(*) into cont_tur from turma where cd_turma = vl_turma;
+    
+    if (cont_tur = 1) then
+        
+        select sigla into sig from turma where cd_turma = vl_turma;
+        select faixa_cd_aluno.nextval into mat from dual;
+        
+        insert into aluno
+        (matricula, nome, cpf, rg, telefone, e_mail, endereco, dt_nascimento, dt_cadastro, cd_turma, matricula_ativa)
+        values
+        (mat, vl_nome, vl_cpf, vl_rg, vl_tel, vl_email, vl_end, vl_dtnasc, sysdate, vl_turma, vl_mat_atv);
+    
+        dbms_output.put_line('Aluno(a) [' || vl_nome || '] cadastrado com sucesso.' || chr(10) || 'Turma: ' || sig);
+        commit;
+        
+        else 
+         dbms_output.put_line('Erro ao cadastrar aluno(a) [' || vl_nome || ']');
+         dbms_output.put_line(chr(10) || 'Verifique: '  || chr(10) || ' - cpf' || chr(10) || ' - rg');
+    
+    end if;
+
+    exception when dup_val_on_index then
+    dbms_output.put_line('Erro ao cadastrar aluno(a) [' || vl_nome || ']');
+    dbms_output.put_line(chr(10) || 'Verifique: '  || chr(10) || ' - cpf' || chr(10) || ' - rg');
+    
+end sp_insert_aluno;
+
+-- procedure de insert frequencia_aluno
+
+create or replace procedure sp_insert_frequencia_nota
+(
+vl_disc in frequencia_nota.cd_disciplina%type
+,vl_mat in frequencia_nota.matricula%type
+,vl_av1 in frequencia_nota.nota_av1%type
+,vl_av2 in frequencia_nota.nota_av2%type
+,vl_av3 in frequencia_nota.nota_av3%type
+,vl_faltas in frequencia_nota.faltas%type
+,vl_sit in frequencia_nota.situacao%type
+) is cont_disc number(02); cont_mat cont_disc%type; n_aluno aluno.nome%type; 
+
+begin
+    
+    select count(*) into cont_disc from disciplina where cd_disciplina = vl_disc;
+    select count(*) into cont_mat from aluno where matricula = vl_mat;
+    
+    if (cont_disc = 1 and cont_mat = 1) then
+    
+        select nome into n_aluno from aluno where matricula = vl_mat;
+        
+        insert into frequencia_nota
+        (cd_disciplina, matricula, nota_av1, nota_av2, nota_av3, faltas, situacao)
+        values
+        (vl_disc, vl_mat, vl_av1, vl_av2, vl_av3, vl_faltas, vl_sit);
+        
+        dbms_output.put_line('Aluno(a) [' || n_aluno || '] disciplina: ' ||  vl_disc || ' Av1: ' || vl_av1 || ' Av2: ' || vl_av2 || ' Av3: ' || vl_av3 || ' Faltas: ' || vl_faltas || ' Situação: ' || vl_sit);
+        commit;
+    
+    else
+        dbms_output.put_line('Erro ao preencher boletim de [' || n_aluno || ']');
+        dbms_output.put_line(chr(10) || 'Verifique: '  || chr(10) || ' - número de mátricula' || chr(10) || ' - codigo da disciplina');
+    end if;
+     exception 
+    when dup_val_on_index then
+    dbms_output.put_line('Erro ao preencher boletim de [' || n_aluno || ']');
+    dbms_output.put_line(chr(10) || 'Verifique: '  || chr(10) || ' - número de mátricula' || chr(10) || ' - codigo da disciplina');
+
+end sp_insert_frequencia_nota;
