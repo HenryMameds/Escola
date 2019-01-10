@@ -1,0 +1,144 @@
+drop table disciplina cascade constraints;
+create table disciplina(
+cd_disciplina number(4)
+,nome varchar(30) not null
+,carga_horaria number(3) not null
+,sigla char(6) not null
+,descricao varchar(100) 
+,constraint disc_nome_uk unique(nome)
+,constraint disc_sigla_uk unique(sigla)
+,constraint disciplina_pk primary key(cd_disciplina))
+tablespace AdminDBA_tbs;
+
+drop table curso cascade constraints;
+create table curso(
+cd_curso number(4)
+,nome varchar(40)
+,sigla char(6) not null
+,descricao varchar(100) 
+,duracao number(3) not null
+,constraint curso_nome_uk unique(nome)
+,constraint curso_sigla_uk unique(sigla)
+,constraint curso_pk primary key(cd_curso))
+tablespace AdminDBA_tbs;
+
+drop table professor cascade constraints;
+create table professor(
+cd_professor number(4)
+,nome varchar(40) not null
+,cpf char(11) not null
+,telefone varchar(15) not null
+,e_mail varchar(30) not null
+,endereco varchar(60)
+,dt_nascimento date not null
+,dt_cadastro date not null
+,constraint prof_cpf_uk unique(cpf)
+,constraint professor_pk primary key(cd_professor))
+tablespace AdminDBA_tbs;
+
+drop table sala cascade constraints;
+create table sala(
+cd_sala number(4)
+,numero number(4)
+,descricao varchar(40)
+,constraint sala_n_uk unique(numero)
+,constraint sala_pk primary key(cd_sala))
+tablespace AdminDBA_tbs;
+
+
+drop table turma cascade constraints;
+create table turma(
+cd_turma number(4)
+,sigla char(6) not null
+,cd_curso number(4) not null
+,periodo varchar(15)
+,dt_cadastro date not null
+,constraint turma_pk primary key(cd_turma)
+,constraint turma_sigla_uk unique(sigla)
+,constraint turma_curso_fk foreign key(cd_curso) references curso(cd_curso))
+tablespace AdminDBA_tbs;
+
+drop table sal_tur cascade constraints;
+create table sal_tur(
+cd_sala number(4) 
+,cd_turma number(4)
+,data_st date
+,constraint sal_tur_pk primary key(cd_sala, cd_turma)
+,constraint sal_turma_fk foreign key(cd_turma) references turma(cd_turma)
+,constraint sala_tur_fk foreign key(cd_sala) references sala(cd_sala))
+tablespace AdminDBA_tbs;
+
+drop table curso_disciplina cascade constraints;
+create table curso_disciplina(
+cd_disciplina number(4)
+,cd_curso number(4) 
+,constraint cur_desc_pk primary key(cd_disciplina, cd_curso)
+,constraint cur_disciplina_fk foreign key(cd_disciplina) references disciplina(cd_disciplina)
+,constraint curso_disc_fk foreign key(cd_curso) references curso(cd_curso))
+tablespace AdminDBA_tbs;
+
+drop table lecionada_horario cascade constraints;
+create table lecionada_horario(
+cd_turma number(4)
+,cd_professor number(4)
+,cd_disciplina number(4)
+,hora_inicio number(2)
+,hora_final number(2)
+,dia varchar(15)
+,constraint lecionada_horario_pk primary key(cd_turma, cd_professor, cd_disciplina, dia)
+,constraint lecionada_horario_tur_fk foreign key(cd_turma) references turma(cd_turma)
+,constraint lecionada_horario_disc_fk foreign key(cd_disciplina) references disciplina(cd_disciplina)
+,constraint lecionada_horario_prof_fk foreign key(cd_professor) references professor(cd_professor)
+,constraint lecionada_horario_inicio_ck check (hora_inicio between 08 and 19)
+,constraint lecionada_horario_final_ck check (hora_final between 10 and 23)
+,constraint lecionada_horario_dia_ck check (dia in ('seg', 'ter', 'qua', 'qui', 'sex', 'sab')))
+tablespace AdminDBA_tbs;
+
+
+drop table aluno cascade constraints;
+create table aluno(
+matricula number(10)
+,nome varchar(30) not null
+,cpf char(11) not null
+,rg char(15) not null
+,telefone varchar(15) not null
+,e_mail varchar(30) not null
+,endereco varchar(60) not null
+,dt_nascimento date not null
+,dt_cadastro date not null
+,cd_turma number(4) not null
+,matricula_ativa char(1) not null
+,constraint aluno_pk primary key(matricula)
+,constraint aluno_cpf_uk unique(cpf)
+,constraint aluno_rg_uk unique(rg)
+,constraint aluno_tur_fk foreign key(cd_turma) references turma(cd_turma)
+,constraint aluno_check check (matricula_ativa in('S', 's', 'n', 'N')))
+tablespace AdminDBA_tbs;
+
+
+drop table frequencia_nota cascade constraints;
+create table frequencia_nota(
+cd_disciplina number(04)
+,matricula number(10)
+,nota_av1 number(3,1) 
+,nota_av2 number(3,1) 
+,nota_av3 number(3,1)
+,faltas number(2) 
+,situacao varchar(40)
+,constraint freq_n_disc_fk foreign key(cd_disciplina) references disciplina(cd_disciplina)
+,constraint freq_n_mat_fk foreign key(matricula) references aluno(matricula)
+,constraint freq_sit_ck check(situacao in ('aprovado', 'reprovado', 'exame', 'dispensado'))
+,constraint frequencia_nota_pk primary key(cd_disciplina, matricula))
+tablespace AdminDBA_tbs;
+
+---------------------------
+select * from disciplina; 
+select * from curso; 
+select * from professor; 
+select * from sala;
+select * from turma; 
+select * from sal_tur;
+select * from curso_disciplina;
+select * from lecionada_horario;
+select * from aluno; 
+select * from frequencia_nota;
