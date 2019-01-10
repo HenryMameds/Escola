@@ -1,0 +1,48 @@
+-- Sequência Disciplina
+
+drop sequence faixa_cd_disc;
+create sequence faixa_cd_disc
+start with 001
+increment by 1
+nocycle
+nocache;
+
+-- Sequência Curso
+drop sequence faixa_cd_curso;
+create sequence faixa_cd_curso
+start with 001
+increment by 1
+nocycle
+nocache;
+
+-- Sequência professor
+drop sequence faixa_cd_prof;
+create sequence faixa_cd_prof
+start with 001
+increment by 1
+nocycle
+nocache;
+
+-- Sequência sala
+drop sequence faixa_cd_sala;
+create sequence faixa_cd_sala
+start with 001
+increment by 1
+nocycle
+nocache;
+
+-- Sequência turma
+drop sequence faixa_cd_turma;
+create sequence faixa_cd_turma
+start with 001
+increment by 1
+nocycle
+nocache;
+
+-- Sequência aluno
+drop sequence faixa_cd_aluno;
+create sequence faixa_cd_aluno
+start with 001
+increment by 1
+nocycle
+nocache;
