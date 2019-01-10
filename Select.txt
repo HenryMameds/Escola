@@ -1,0 +1,50 @@
+-- select da tabela disciplina
+select cd_disciplina "Codigo", nome "Disciplina", sigla "Sigla", carga_horaria "Carga Horária", descricao "Descrição"  from disciplina order by nome asc;
+
+-- select da tabela curso
+select cd_curso "Codigo", nome "Curso", sigla "Sigla", descricao "Descrição" from curso order by nome asc;
+
+
+-- select da tabela professor
+select cd_professor "Codigo", nome "Nome", cpf "CPF", telefone "Telefone", e_mail "E-Mail", endereco "Endereço", dt_nascimento "DT Nascimento", dt_cadastro "DT Cadastro" from professor order by nome asc;
+
+-- select da tabela sala
+ select cd_sala "Codigo", numero "N°", descricao "Descrição" from sala order by numero asc;
+
+-- select da tabela turma 
+
+select t.cd_turma "Codigo", t.sigla "Sigla", c.nome "Curso", t.periodo "Período", t.dt_cadastro "DT Cadastro" from 
+ turma t inner join curso c 
+ ON (t.cd_curso = c.cd_curso)
+ Order by t.sigla asc;
+
+-- select da tabela sal_tur
+
+ select st.cd_turma "CD Turma", t.sigla, s.numero "Sala", data_st "Data" from sal_tur st
+ inner join turma t ON(st.cd_turma = t.cd_turma)
+ inner join sala s ON(st.cd_sala = s.cd_sala)
+ order by s.numero asc;
+
+
+
+-- select da tabela curso_disciplina
+
+ select cd.cd_curso "CD Curso", c.nome "Curso", d.nome "Disciplina"
+ from curso_disciplina cd inner join curso c ON (cd.cd_curso = c.cd_curso)
+ inner join disciplina d ON (cd.cd_disciplina = d.cd_disciplina);
+
+-- select da tabela lecionada horario
+
+select  a.nome "Aluno",t.sigla "Turma", d.nome "Disciplina"
+, p.nome "Professor", lh.hora_inicio "Início", lh.hora_final "Fim", upper(lh.dia) "Dia" 
+from lecionada_horario lh
+inner join turma t ON (lh.cd_turma = t.cd_turma)
+inner join disciplina d ON (lh.cd_disciplina = d.cd_disciplina)
+inner join professor p ON (lh.cd_professor = p.cd_professor)
+inner join aluno a ON (a.cd_turma = t.cd_turma);
+
+-- select da tabela frequencia_nota
+
+select a.nome "Aluno", d.nome "Disciplina",  f.nota_av1 "Av1", f.nota_av2 "Av2", f.nota_av3 "Av3", f.faltas "Faltas", f.situacao "Situação" from frequencia_nota f
+inner join disciplina d ON (f.cd_disciplina = d.cd_disciplina)
+inner join aluno a ON (f.matricula = a.matricula);
