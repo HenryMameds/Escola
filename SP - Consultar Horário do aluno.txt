@@ -1,0 +1,33 @@
+create or replace procedure sp_horario_aluno
+(
+vl_matricula aluno.matricula%type
+) is 
+vl_sigla turma.sigla%type;
+nome aluno.nome%type; 
+vl_disc disciplina.nome%type; 
+prof professor.nome%type; 
+vl_hi lecionada_horario.hora_inicio%type;
+vl_hf lecionada_horario.hora_final%type;
+vl_dia lecionada_horario.dia%type;
+vl_tur turma.cd_turma%type;
+vl_cdsala sala.cd_sala%type;
+vl_nsala sala.numero%type;
+
+begin
+
+    select   a.nome, a.cd_turma, t.sigla , d.nome , p.nome, lh.hora_inicio, lh.hora_final, lh.dia 
+    into nome, vl_tur, vl_sigla, vl_disc, prof, vl_hi, vl_hf, vl_dia 
+    from lecionada_horario lh
+    inner join turma t ON (lh.cd_turma = t.cd_turma)
+    inner join disciplina d ON (lh.cd_disciplina = d.cd_disciplina)
+    inner join professor p ON (lh.cd_professor = p.cd_professor)
+    inner join aluno a ON (a.cd_turma = t.cd_turma)
+    where a.matricula =  vl_matricula;
+    
+    select cd_sala into vl_cdsala from sal_tur where cd_turma = vl_tur;
+    select numero into vl_nsala from sala where cd_sala = vl_cdsala;
+
+   dbms_output.put_line('Aluno: ' || nome || ' - Turma: ' || vl_sigla || '-  Disciplina: ' || vl_disc || ' - Horário das ' || vl_hi || ' às ' || vl_hf || ' - ' || upper(vl_dia) || ' - Sala: ' || vl_nsala);
+
+
+end sp_horario_aluno;
